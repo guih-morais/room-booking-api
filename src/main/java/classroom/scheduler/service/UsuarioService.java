@@ -1,5 +1,6 @@
 package classroom.scheduler.service;
 
+import classroom.scheduler.dto.AtualizaUsuarioDTO;
 import classroom.scheduler.dto.UsuarioDTO;
 import classroom.scheduler.exceptions.ValidacaoException;
 import classroom.scheduler.validacoes.*;
@@ -27,11 +28,8 @@ public class UsuarioService {
     public ResponseEntity<UsuarioDTO> criarUsuario(UsuarioDTO dto) {
         Usuario usuario = new Usuario(dto);
 
-        List<Validacao> validacoes = new ArrayList<>(List.of(
-                new ValidacaoVazioOuNulo(),
-                new ValidacaoUsuarioNomeJaCadastrado(repositorio),
-                new ValidacaoUsuarioEmailJaCadastrado(repositorio)));
-                validacoes.forEach(v -> v.validar(usuario));
+        ValidacoesUsuario.validaNomeUsuarioJaExistente(dto.nome(), repositorio);
+        ValidacoesUsuario.validaEmailJaExistente(dto.email(), repositorio);
 
         repositorio.save(usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body(new UsuarioDTO(usuario));
@@ -62,7 +60,8 @@ public class UsuarioService {
     }
     @Transactional
     public ResponseEntity<String> deletarUsuario(Long id) {
-        Usuario usuario = repositorio.getReferenceById(id);
+        Usuario usuario = repositorio.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Usuário não encontrado no banco de dados."));
         repositorio.delete(usuario);
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -70,14 +69,10 @@ public class UsuarioService {
     }
 
     @Transactional
-    public ResponseEntity<UsuarioDTO> editarUsuario(UsuarioDTO dto) {
-        Optional<Usuario> optionalUsuario = Optional.of(repositorio.getReferenceById(dto.id()));
-        Usuario usuario = optionalUsuario.orElseThrow(
-                () -> new NoSuchElementException("Usuário não localizado no banco de dados"));
-
-        if(StringUtils.isBlank(dto.nome())) {
-            throw new ValidacaoException("O campo nome do Usuário deve ser preenchido");
-        }
+    public ResponseEntity<UsuarioDTO> editarUsuario(AtualizaUsuarioDTO dto) {
+        Usuario usuario = repositorio.findById(dto.id())
+                .orElseThrow(() -> new NoSuchElementException("Usuário não localizado no banco de dados"));
+        ValidacoesUsuario.validaNomeUsuarioJaExistente(dto.nome(), repositorio);
         usuario.setNome(dto.nome());
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)

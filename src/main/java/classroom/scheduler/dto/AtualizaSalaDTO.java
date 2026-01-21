@@ -1,6 +1,6 @@
 package classroom.scheduler.dto;
 
-import classroom.scheduler.validacoes.Validacoes;
+import classroom.scheduler.validacoes.ValidacoesSala;
 
 public record AtualizaSalaDTO(
         Long id,
@@ -10,7 +10,7 @@ public record AtualizaSalaDTO(
 
     public AtualizaSalaDTO {
         if (capacidade != null) {
-            Validacoes.validaCapacidadeSala(capacidade);
+            ValidacoesSala.validaTamanhoCapacidadeSala(capacidade);
         }
     }
 

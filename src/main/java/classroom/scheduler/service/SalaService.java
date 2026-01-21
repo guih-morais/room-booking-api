@@ -2,13 +2,9 @@ package classroom.scheduler.service;
 
 import classroom.scheduler.dto.AtualizaSalaDTO;
 import classroom.scheduler.dto.SalaDTO;
-import classroom.scheduler.exceptions.ValidacaoException;
 import classroom.scheduler.models.Sala;
 import classroom.scheduler.repository.SalaRepository;
-import classroom.scheduler.validacoes.Validacao;
-import classroom.scheduler.validacoes.ValidacaoSalaCapacidade;
-import classroom.scheduler.validacoes.ValidacaoSalaNumeroJaExistente;
-import classroom.scheduler.validacoes.Validacoes;
+import classroom.scheduler.validacoes.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class SalaService {
@@ -27,19 +22,11 @@ public class SalaService {
     @Autowired
     SalaRepository repositorio;
 
-    Validacoes validacoes;
-
     @Transactional
     public ResponseEntity<SalaDTO> criarSala(SalaDTO dto) {
         Sala sala = new Sala(dto);
-
-        List<Validacao> validacoes = new ArrayList<>(List.of(
-                new ValidacaoSalaCapacidade(),
-                new ValidacaoSalaNumeroJaExistente(repositorio)));
-
-        validacoes.forEach(v -> v.validar(sala));
+        ValidacoesSala.validaNumeroSalaJaExiste(dto.numeroSala(), repositorio);
         repositorio.save(sala);
-
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new SalaDTO(sala));
@@ -78,8 +65,7 @@ public class SalaService {
                 .orElseThrow(() -> new NoSuchElementException("Sala não localizada no banco de dados."));
 
         if (dto.numeroSala() != null) {
-            validacoes = new Validacoes(repositorio);
-            validacoes.validaNumeroSalaJaExiste(dto.numeroSala());
+            ValidacoesSala.validaNumeroSalaJaExiste(dto.numeroSala(), repositorio);
             sala.setNumeroSala(dto.numeroSala());
         }
         if (dto.capacidade() != null) {

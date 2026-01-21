@@ -1,6 +1,7 @@
 package classroom.scheduler.controller;
 
 
+import classroom.scheduler.dto.AtualizaUsuarioDTO;
 import classroom.scheduler.dto.UsuarioDTO;
 import classroom.scheduler.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,6 @@ public class UsuarioController {
     }
 
     @PutMapping
-    public ResponseEntity<UsuarioDTO> editarUsuario(@RequestBody UsuarioDTO dto) { return service.editarUsuario(dto); }
+    public ResponseEntity<UsuarioDTO> editarUsuario(@RequestBody AtualizaUsuarioDTO dto) { return service.editarUsuario(dto); }
 
 }

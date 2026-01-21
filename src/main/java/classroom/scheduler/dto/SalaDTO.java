@@ -1,9 +1,7 @@
 package classroom.scheduler.dto;
 
-import classroom.scheduler.exceptions.ValidacaoException;
 import classroom.scheduler.models.Sala;
-import classroom.scheduler.validacoes.Validacoes;
-import org.springframework.stereotype.Repository;
+import classroom.scheduler.validacoes.ValidacoesSala;
 
 public record SalaDTO(
         Long id,
@@ -12,8 +10,9 @@ public record SalaDTO(
 ) {
 
     public SalaDTO {
-        Validacoes.validaCamposSalaNulo(numeroSala, capacidade);
-        Validacoes.validaCapacidadeSala(capacidade);
+        ValidacoesSala.validaCapacidadeNula(capacidade);
+        ValidacoesSala.validaTamanhoCapacidadeSala(capacidade);
+        ValidacoesSala.validaNumeroSalaNulo(numeroSala);
     }
     public SalaDTO(Sala sala) {
         this(sala.getId(), sala.getCapacidade(), sala.getNumeroSala());
