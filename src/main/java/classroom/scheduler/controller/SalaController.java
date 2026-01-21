@@ -1,6 +1,7 @@
 package classroom.scheduler.controller;
 
 
+import classroom.scheduler.dto.AtualizaSalaDTO;
 import classroom.scheduler.dto.SalaDTO;
 import classroom.scheduler.dto.UsuarioDTO;
 import classroom.scheduler.service.SalaService;
@@ -33,6 +34,6 @@ public class SalaController {
     public ResponseEntity<String> deletarSala(@PathVariable Long id) { return service.deletarSalaNumero(id); }
 
     @PutMapping
-    public ResponseEntity<SalaDTO> editarSala(@RequestBody SalaDTO dto) { return service.editarSala(dto); }
+    public ResponseEntity<SalaDTO> editarSala(@RequestBody AtualizaSalaDTO dto) { return service.editarSala(dto); }
 
 }

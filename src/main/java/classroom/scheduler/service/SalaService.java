@@ -1,16 +1,16 @@
 package classroom.scheduler.service;
 
+import classroom.scheduler.dto.AtualizaSalaDTO;
 import classroom.scheduler.dto.SalaDTO;
-import classroom.scheduler.dto.UsuarioDTO;
 import classroom.scheduler.exceptions.ValidacaoException;
 import classroom.scheduler.models.Sala;
 import classroom.scheduler.repository.SalaRepository;
 import classroom.scheduler.validacoes.Validacao;
 import classroom.scheduler.validacoes.ValidacaoSalaCapacidade;
 import classroom.scheduler.validacoes.ValidacaoSalaNumeroJaExistente;
+import classroom.scheduler.validacoes.Validacoes;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,8 +22,12 @@ import java.util.Optional;
 
 @Service
 public class SalaService {
+
+
     @Autowired
     SalaRepository repositorio;
+
+    Validacoes validacoes;
 
     @Transactional
     public ResponseEntity<SalaDTO> criarSala(SalaDTO dto) {
@@ -60,8 +64,7 @@ public class SalaService {
 
     @Transactional
     public ResponseEntity<String> deletarSalaNumero(Long id) {
-        Optional<Sala> optionalSala = Optional.of(repositorio.getReferenceById(id));
-        Sala sala = optionalSala
+        Sala sala = repositorio.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Sala não localizada no banco de dados."));
         sala.setSalaAtiva(false);
         return ResponseEntity
@@ -70,34 +73,20 @@ public class SalaService {
     }
 
     @Transactional
-    public ResponseEntity<SalaDTO> editarSala(SalaDTO dto) {
-
-        Optional<Sala> optionalSala = Optional.of(repositorio.getReferenceById(dto.id()));
-        Sala sala = optionalSala
+    public ResponseEntity<SalaDTO> editarSala(AtualizaSalaDTO dto) {
+        Sala sala = repositorio.findById(dto.id())
                 .orElseThrow(() -> new NoSuchElementException("Sala não localizada no banco de dados."));
 
         if (dto.numeroSala() != null) {
-
-            if (repositorio.findByNumeroSala(dto.numeroSala()).isEmpty()) {
-                sala.setNumeroSala(dto.numeroSala());
-
-            } else {
-                throw new ValidacaoException("Já existe uma sala no banco de dados com este número.");
-            }
-
+            validacoes = new Validacoes(repositorio);
+            validacoes.validaNumeroSalaJaExiste(dto.numeroSala());
+            sala.setNumeroSala(dto.numeroSala());
         }
-
         if (dto.capacidade() != null) {
-            if (dto.capacidade() > 0) {
-                sala.setCapacidade(dto.capacidade());
-            } else {
-                throw new ValidacaoException("A capacidade deve ser superior a 0");
-            }
+            sala.setCapacidade(dto.capacidade());
         }
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
                 .body(new SalaDTO(sala));
-
-
     }
 }
