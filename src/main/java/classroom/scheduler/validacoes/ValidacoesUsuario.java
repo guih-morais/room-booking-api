@@ -9,18 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ValidacoesUsuario {
 
-    public static void validaNomeNulo(String nome) {
-        if (StringUtils.isBlank(nome)) {
-            throw new ValidacaoException("O campo nome não pode ser vazio ou nulo.");
-        }
-    }
-
-    public static void validaEmailNulo(String email) {
-        if (StringUtils.isBlank(email)) {
-            throw new ValidacaoException("O campo email não pode ser vazio ou nulo.");
-        }
-    }
-
     public static void validaNomeUsuarioJaExistente(String nome, UsuarioRepository usuarioRepository) {
         if (usuarioRepository.findByNome(nome).isPresent()) {
             throw new ValidacaoException("Nome de usuário já cadastrado no banco de dados.");

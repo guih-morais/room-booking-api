@@ -1,7 +1,20 @@
 package classroom.scheduler.validacoes;
 
-import classroom.scheduler.models.Validavel;
+import classroom.scheduler.exceptions.ValidacaoException;
+import io.micrometer.common.util.StringUtils;
 
-public interface Validacao {
-    public void validar(Validavel obj);
+public class Validacao {
+    public static void validaCampoNulo(Object objeto, String nomeCampo) {
+
+        if (objeto == null) {
+            throw new ValidacaoException("O atributo " + nomeCampo + " não pode ser nulo.");
+        }
+
+        if (objeto instanceof String s) {
+            if (StringUtils.isBlank(s)) {
+                throw new ValidacaoException("O atributo " + nomeCampo + " não pode ser vazio.");
+            }
+        }
+
+    }
 }

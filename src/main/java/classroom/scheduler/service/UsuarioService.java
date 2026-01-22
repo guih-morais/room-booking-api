@@ -78,4 +78,6 @@ public class UsuarioService {
                 .status(HttpStatus.ACCEPTED)
                 .body(new UsuarioDTO(usuario));
     }
+
+
 }

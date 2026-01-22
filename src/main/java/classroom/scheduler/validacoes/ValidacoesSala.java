@@ -1,6 +1,7 @@
 package classroom.scheduler.validacoes;
 
 import classroom.scheduler.exceptions.ValidacaoException;
+import classroom.scheduler.models.Sala;
 import classroom.scheduler.repository.SalaRepository;
 import org.springframework.stereotype.Component;
 
@@ -13,15 +14,11 @@ public class ValidacoesSala {
         }
     }
 
-    public static void validaCapacidadeNula(Integer capacidade) {
-        if (capacidade == null) {
-            throw new ValidacaoException("A capacidade da sala não pode ser nula.");
-        }
-    }
-
-    public static void validaNumeroSalaNulo(Integer numeroSala) {
-        if (numeroSala == null) {
-            throw new ValidacaoException("O número da sala não pode ser nulo.");
+    public static void validaSalaAtiva(Long id, SalaRepository salaRepository) {
+        Sala sala = salaRepository.findById(id)
+                .orElseThrow(() -> new ValidacaoException("Sala não encontrada no banco de dados"));
+        if(!sala.isSalaAtiva()) {
+            throw new ValidacaoException("Sala está desativada no banco de dados.");
         }
     }
 

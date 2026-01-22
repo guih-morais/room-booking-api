@@ -61,6 +61,14 @@ public class Reserva implements Validavel {
         this.statusReserva = StatusReserva.ATIVA;
     }
 
+    public void setInicioReserva(LocalDateTime inicioReserva) {
+        this.inicioReserva = inicioReserva;
+    }
+
+    public void setFimReserva(LocalDateTime fimReserva) {
+        this.fimReserva = fimReserva;
+    }
+
     public Long getId() {
         return id;
     }
