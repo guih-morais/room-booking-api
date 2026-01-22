@@ -1,6 +1,6 @@
 package classroom.scheduler.models;
 
-import classroom.scheduler.dto.ReservaDTO;
+import classroom.scheduler.dto.InputReservaDTO;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -53,7 +53,7 @@ public class Reserva implements Validavel {
     private LocalDateTime inicioReserva;
     private LocalDateTime fimReserva;
 
-    public Reserva(ReservaDTO dto, Usuario usuario, Sala sala) {
+    public Reserva(InputReservaDTO dto, Usuario usuario, Sala sala) {
         this.usuario = usuario;
         this.sala = sala;
         this.inicioReserva = dto.inicioReserva();

@@ -1,6 +1,6 @@
 package classroom.scheduler.models;
 
-import classroom.scheduler.dto.SalaDTO;
+import classroom.scheduler.dto.InputSalaDTO;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class Sala implements Validavel {
     public Sala() {
     }
 
-    public Sala(SalaDTO dto) {
+    public Sala(InputSalaDTO dto) {
         this.capacidade = dto.capacidade();
         this.numeroSala = dto.numeroSala();
         this.salaAtiva = true;

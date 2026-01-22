@@ -1,6 +1,5 @@
 package classroom.scheduler.exceptions;
 
-import classroom.scheduler.exceptions.ValidacaoException;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,4 +31,25 @@ public class ExeceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body("Favor verifique os campos, elemento não foi encontrado no banco de dados.");
     }
+
+    @ExceptionHandler(UsuarioNaoLocalizadoException.class)
+    public ResponseEntity<String> exceptionUsuarioNaoEncontrado(UsuarioNaoLocalizadoException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(SalaNaoLocalizadaException.class)
+    public ResponseEntity<String> exceptionSalaNaoEncontrada(SalaNaoLocalizadaException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
+    }
+    @ExceptionHandler(ReservaNaoLocalizadaException.class)
+    public ResponseEntity<String> exceptionReservaNaoEncontrada(ReservaNaoLocalizadaException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
+    }
+
 }

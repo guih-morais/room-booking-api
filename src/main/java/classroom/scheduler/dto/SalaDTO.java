@@ -7,15 +7,10 @@ import classroom.scheduler.validacoes.ValidacoesSala;
 public record SalaDTO(
         Long id,
         Integer capacidade,
-        Integer numeroSala
+        Integer numeroSala,
+        Boolean salaAtiva
 ) {
-
-    public SalaDTO {
-        ValidacoesSala.validaTamanhoCapacidadeSala(capacidade);
-        Validacao.validaCampoNulo(capacidade, "capacidade");
-        Validacao.validaCampoNulo(numeroSala, "número da sala");
-    }
     public SalaDTO(Sala sala) {
-        this(sala.getId(), sala.getCapacidade(), sala.getNumeroSala());
+        this(sala.getId(), sala.getCapacidade(), sala.getNumeroSala(), sala.isSalaAtiva());
     }
 }

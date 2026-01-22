@@ -1,7 +1,12 @@
 package classroom.scheduler.service;
 
 import classroom.scheduler.dto.AtualizaReservaDTO;
+import classroom.scheduler.dto.InputReservaDTO;
 import classroom.scheduler.dto.ReservaDTO;
+import classroom.scheduler.dto.UsuarioDTO;
+import classroom.scheduler.exceptions.ReservaNaoLocalizadaException;
+import classroom.scheduler.exceptions.SalaNaoLocalizadaException;
+import classroom.scheduler.exceptions.UsuarioNaoLocalizadoException;
 import classroom.scheduler.exceptions.ValidacaoException;
 import classroom.scheduler.models.Reserva;
 import classroom.scheduler.models.Sala;
@@ -14,11 +19,12 @@ import classroom.scheduler.validacoes.ValidacoesReserva;
 import classroom.scheduler.validacoes.ValidacoesSala;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -35,14 +41,14 @@ public class ReservaService {
     SalaRepository salaRepository;
 
     @Transactional
-    public ResponseEntity<ReservaDTO> criarReserva(ReservaDTO dto) {
+    public ReservaDTO criarReserva(InputReservaDTO dto) {
 
         //Tenta buscar Usuário no banco de dados
         Usuario usuario = usuarioRepository.findById(dto.usuario_id())
-                .orElseThrow(() -> new NoSuchElementException("Usuário não localizada no banco de dados."));
+                .orElseThrow(UsuarioNaoLocalizadoException::new);
         //Tenta buscar Sala no banco de dados
         Sala sala = salaRepository.findById(dto.sala_id())
-                .orElseThrow(() -> new NoSuchElementException("Sala não localizada no banco de dados."));
+                .orElseThrow(SalaNaoLocalizadaException::new);
 
         //Validações para criar a Reserva
         ValidacoesSala.validaSalaAtiva(dto.sala_id(), salaRepository);
@@ -50,40 +56,40 @@ public class ReservaService {
 
         Reserva reserva = new Reserva(dto, usuario, sala);
         repositorio.save(reserva);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(new ReservaDTO(reserva));
+        return new ReservaDTO(reserva);
     }
 
     @Transactional
-    public ResponseEntity<String> cancelarReserva(Long id) {
+    public void cancelarReserva(Long id) {
         Reserva reserva = repositorio.findById(id)
-                .orElseThrow(() -> new ValidacaoException("Reserva não encontrada no banco de dados."));
+                .orElseThrow(ReservaNaoLocalizadaException::new);
         ValidacoesReserva.validaReservaAtiva(id, repositorio);
         reserva.setStatusReserva(StatusReserva.CANCELADA);
-        return ResponseEntity
-                .status(HttpStatus.ACCEPTED)
-                .body("Reserva cancelada com sucesso!");
     }
 
-    public ResponseEntity<List<ReservaDTO>> buscarTodasReservas() {
-        List<Reserva> reservas = repositorio.findAll();
-        List<ReservaDTO> reservasDTO = reservas.stream().map(ReservaDTO::new).toList();
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(reservasDTO);
+    public Page<ReservaDTO> buscarTodasReservas(Pageable pageable) {
+        Page<Reserva> reservas = repositorio.findAll(pageable);
+        return reservas.map(ReservaDTO::new);
     }
 
     @Transactional
-    public ResponseEntity<ReservaDTO> editarReserva(AtualizaReservaDTO dto) {
+    public ReservaDTO editarReserva(AtualizaReservaDTO dto) {
         Reserva reserva = repositorio.findById(dto.id())
-                .orElseThrow(() -> new ValidacaoException("Reserva não encontrada no banco de dados"));
+                .orElseThrow(ReservaNaoLocalizadaException::new);
         ValidacoesReserva.validaReservaAtiva(dto.id(), repositorio);
+        ValidacoesReserva.validaPeriodoEntreReservas(
+                reserva.getInicioReserva(),
+                reserva.getFimReserva(),
+                reserva.getSala().getId(),
+                repositorio);
         reserva.setInicioReserva(dto.inicioReserva());
         reserva.setFimReserva(dto.fimReserva());
-        return ResponseEntity
-                .status(HttpStatus.ACCEPTED)
-                .body(new ReservaDTO(reserva));
+        return new ReservaDTO(reserva);
+    }
+
+    public ReservaDTO buscarReservaId(Long id) {
+        Reserva reserva = repositorio.findById(id)
+                .orElseThrow(ReservaNaoLocalizadaException::new);
+        return new ReservaDTO(reserva);
     }
 }

@@ -9,6 +9,7 @@ public record AtualizaUsuarioDTO(
         String nome
 ) {
     public AtualizaUsuarioDTO {
+        Validacao.validaCampoNulo(id, "id");
         if(nome != null) {
             Validacao.validaCampoNulo(nome, "nome");
         }

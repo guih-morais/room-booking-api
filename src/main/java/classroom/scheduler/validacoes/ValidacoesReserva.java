@@ -1,7 +1,6 @@
 package classroom.scheduler.validacoes;
 
-import classroom.scheduler.dto.AtualizaReservaDTO;
-import classroom.scheduler.dto.ReservaDTO;
+import classroom.scheduler.dto.InputReservaDTO;
 import classroom.scheduler.exceptions.ValidacaoException;
 import classroom.scheduler.models.Reserva;
 import classroom.scheduler.models.StatusReserva;
@@ -23,7 +22,7 @@ public class ValidacoesReserva {
             throw new ValidacaoException("Esta sala já foi reservada nesse período de data e horário.");
         }
     }
-    public static void validaPeriodoEntreReservas(ReservaDTO dto, ReservaRepository repositorio) {
+    public static void validaPeriodoEntreReservas(InputReservaDTO dto, ReservaRepository repositorio) {
         if(repositorio.intervaloJaReservado(dto.sala_id(), dto.inicioReserva(), dto.fimReserva())) {
             throw new ValidacaoException("Esta sala já foi reservada nesse período de data e horário.");
         }

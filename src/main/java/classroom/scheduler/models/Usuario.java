@@ -1,6 +1,6 @@
 package classroom.scheduler.models;
 
-import classroom.scheduler.dto.UsuarioDTO;
+import classroom.scheduler.dto.InputUsuarioDTO;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class Usuario implements Validavel{
     public Usuario() {
     }
 
-    public Usuario(UsuarioDTO dto) {
+    public Usuario(InputUsuarioDTO dto) {
         this.nome = dto.nome();
         this.email = dto.email();
     }
