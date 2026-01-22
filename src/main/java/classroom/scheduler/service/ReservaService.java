@@ -1,13 +1,12 @@
 package classroom.scheduler.service;
 
-import classroom.scheduler.dto.AtualizaReservaDTO;
-import classroom.scheduler.dto.InputReservaDTO;
+import classroom.scheduler.dto.resume.ResumeReservaDTO;
+import classroom.scheduler.dto.updates.AtualizaReservaDTO;
+import classroom.scheduler.dto.input.InputReservaDTO;
 import classroom.scheduler.dto.ReservaDTO;
-import classroom.scheduler.dto.UsuarioDTO;
 import classroom.scheduler.exceptions.ReservaNaoLocalizadaException;
 import classroom.scheduler.exceptions.SalaNaoLocalizadaException;
 import classroom.scheduler.exceptions.UsuarioNaoLocalizadoException;
-import classroom.scheduler.exceptions.ValidacaoException;
 import classroom.scheduler.models.Reserva;
 import classroom.scheduler.models.Sala;
 import classroom.scheduler.models.StatusReserva;
@@ -21,12 +20,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class ReservaService {
@@ -67,9 +61,9 @@ public class ReservaService {
         reserva.setStatusReserva(StatusReserva.CANCELADA);
     }
 
-    public Page<ReservaDTO> buscarTodasReservas(Pageable pageable) {
+    public Page<ResumeReservaDTO> buscarTodasReservas(Pageable pageable) {
         Page<Reserva> reservas = repositorio.findAll(pageable);
-        return reservas.map(ReservaDTO::new);
+        return reservas.map(ResumeReservaDTO::new);
     }
 
     @Transactional

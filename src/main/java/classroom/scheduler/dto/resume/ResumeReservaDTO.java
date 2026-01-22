@@ -1,29 +1,31 @@
-package classroom.scheduler.dto;
+package classroom.scheduler.dto.resume;
 
 import classroom.scheduler.models.Reserva;
-import classroom.scheduler.models.Sala;
 import classroom.scheduler.models.StatusReserva;
-import classroom.scheduler.models.Usuario;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
-public record ReservaDTO(
+public record ResumeReservaDTO(
         Long id,
         @JsonFormat(pattern = "dd/MM/yy - HH:mm")
         LocalDateTime inicioReserva,
         @JsonFormat(pattern = "dd/MM/yy - HH:mm")
         LocalDateTime fimReserva,
-        SalaDTO sala,
-        UsuarioDTO usuario,
-        StatusReserva statusReserva) {
+        ResumeUsuarioDTO usuario,
+        ResumeSalaDTO sala,
+        StatusReserva statusReserva
 
-    public ReservaDTO(Reserva reserva) {
+
+) {
+    public ResumeReservaDTO(Reserva reserva){
         this(reserva.getId(),
                 reserva.getInicioReserva(),
                 reserva.getFimReserva(),
-                new SalaDTO(reserva.getSala()),
-                new UsuarioDTO(reserva.getUsuario()),
+                new ResumeUsuarioDTO(reserva.getUsuario()),
+                new ResumeSalaDTO(reserva.getSala()),
                 reserva.getStatusReserva());
     }
+
+
 }

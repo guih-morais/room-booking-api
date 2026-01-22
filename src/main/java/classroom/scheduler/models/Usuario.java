@@ -1,6 +1,6 @@
 package classroom.scheduler.models;
 
-import classroom.scheduler.dto.InputUsuarioDTO;
+import classroom.scheduler.dto.input.InputUsuarioDTO;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -13,6 +13,8 @@ public class Usuario implements Validavel{
     private Long id;
     private String nome;
     private String email;
+    @Column(name = "usuario_ativo", nullable = false)
+    private boolean usuarioAtivo;
     @OneToMany(mappedBy = "usuario")
     private List<Reserva> reservas;
 
@@ -22,6 +24,15 @@ public class Usuario implements Validavel{
     public Usuario(InputUsuarioDTO dto) {
         this.nome = dto.nome();
         this.email = dto.email();
+        this.usuarioAtivo = true;
+    }
+
+    public boolean isUsuarioAtivo() {
+        return usuarioAtivo;
+    }
+
+    public void setUsuarioAtivo(boolean usuarioAtivo) {
+        this.usuarioAtivo = usuarioAtivo;
     }
 
     public void setNome(String nome) {

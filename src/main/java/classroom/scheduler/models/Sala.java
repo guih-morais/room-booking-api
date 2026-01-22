@@ -1,6 +1,6 @@
 package classroom.scheduler.models;
 
-import classroom.scheduler.dto.InputSalaDTO;
+import classroom.scheduler.dto.input.InputSalaDTO;
 import jakarta.persistence.*;
 
 import java.util.List;

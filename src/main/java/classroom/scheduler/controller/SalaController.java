@@ -1,8 +1,8 @@
 package classroom.scheduler.controller;
 
 
-import classroom.scheduler.dto.AtualizaSalaDTO;
-import classroom.scheduler.dto.InputSalaDTO;
+import classroom.scheduler.dto.updates.AtualizaSalaDTO;
+import classroom.scheduler.dto.input.InputSalaDTO;
 import classroom.scheduler.dto.SalaDTO;
 import classroom.scheduler.service.SalaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class SalaController {
 
     @DeleteMapping("deletar/{id}")
     public ResponseEntity<HttpStatus> deletarSala(@PathVariable Long id) {
-        service.deletarSalaNumero(id);
+        service.deletarSala(id);
         return ResponseEntity.noContent().build();
     }
 

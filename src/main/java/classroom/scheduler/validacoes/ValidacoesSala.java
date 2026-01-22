@@ -1,5 +1,6 @@
 package classroom.scheduler.validacoes;
 
+import classroom.scheduler.exceptions.SalaNaoLocalizadaException;
 import classroom.scheduler.exceptions.ValidacaoException;
 import classroom.scheduler.models.Sala;
 import classroom.scheduler.repository.SalaRepository;
@@ -16,7 +17,7 @@ public class ValidacoesSala {
 
     public static void validaSalaAtiva(Long id, SalaRepository salaRepository) {
         Sala sala = salaRepository.findById(id)
-                .orElseThrow(() -> new ValidacaoException("Sala não encontrada no banco de dados"));
+                .orElseThrow(SalaNaoLocalizadaException::new);
         if(!sala.isSalaAtiva()) {
             throw new ValidacaoException("Sala está desativada no banco de dados.");
         }

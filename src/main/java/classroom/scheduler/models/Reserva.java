@@ -1,6 +1,6 @@
 package classroom.scheduler.models;
 
-import classroom.scheduler.dto.InputReservaDTO;
+import classroom.scheduler.dto.input.InputReservaDTO;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

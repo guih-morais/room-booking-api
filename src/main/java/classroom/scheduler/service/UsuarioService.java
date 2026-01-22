@@ -1,7 +1,7 @@
 package classroom.scheduler.service;
 
-import classroom.scheduler.dto.AtualizaUsuarioDTO;
-import classroom.scheduler.dto.InputUsuarioDTO;
+import classroom.scheduler.dto.updates.AtualizaUsuarioDTO;
+import classroom.scheduler.dto.input.InputUsuarioDTO;
 import classroom.scheduler.dto.UsuarioDTO;
 import classroom.scheduler.exceptions.UsuarioNaoLocalizadoException;
 import classroom.scheduler.validacoes.*;
@@ -9,13 +9,9 @@ import classroom.scheduler.models.Usuario;
 import classroom.scheduler.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -47,7 +43,8 @@ public class UsuarioService {
     public void deletarUsuario(Long id) {
         Usuario usuario = repositorio.findById(id)
                 .orElseThrow(UsuarioNaoLocalizadoException::new);
-        repositorio.delete(usuario);
+        ValidacoesUsuario.validaUsuarioAtivo(id, repositorio);
+        usuario.setUsuarioAtivo(false);
     }
 
     @Transactional

@@ -5,9 +5,10 @@ import classroom.scheduler.models.Usuario;
 public record UsuarioDTO(
         Long id,
         String nome,
-        String email
+        String email,
+        boolean usuarioAtivo
 ) {
     public UsuarioDTO(Usuario usuario) {
-        this(usuario.getId(), usuario.getNome(), usuario.getEmail());
+        this(usuario.getId(), usuario.getNome(), usuario.getEmail(), usuario.isUsuarioAtivo());
     }
 }

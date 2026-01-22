@@ -1,8 +1,8 @@
 package classroom.scheduler.controller;
 
 
-import classroom.scheduler.dto.AtualizaUsuarioDTO;
-import classroom.scheduler.dto.InputUsuarioDTO;
+import classroom.scheduler.dto.updates.AtualizaUsuarioDTO;
+import classroom.scheduler.dto.input.InputUsuarioDTO;
 import classroom.scheduler.dto.UsuarioDTO;
 import classroom.scheduler.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.logging.Handler;
 
 @RestController
 @RequestMapping("/usuarios")

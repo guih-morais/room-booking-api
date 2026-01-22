@@ -1,4 +1,4 @@
-package classroom.scheduler.dto;
+package classroom.scheduler.dto.updates;
 
 import classroom.scheduler.validacoes.Validacao;
 import classroom.scheduler.validacoes.ValidacoesSala;

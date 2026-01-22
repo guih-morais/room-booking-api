@@ -1,6 +1,6 @@
 package classroom.scheduler.validacoes;
 
-import classroom.scheduler.dto.InputReservaDTO;
+import classroom.scheduler.dto.input.InputReservaDTO;
 import classroom.scheduler.exceptions.ValidacaoException;
 import classroom.scheduler.models.Reserva;
 import classroom.scheduler.models.StatusReserva;

@@ -1,7 +1,8 @@
 package classroom.scheduler.controller;
 
-import classroom.scheduler.dto.AtualizaReservaDTO;
-import classroom.scheduler.dto.InputReservaDTO;
+import classroom.scheduler.dto.resume.ResumeReservaDTO;
+import classroom.scheduler.dto.updates.AtualizaReservaDTO;
+import classroom.scheduler.dto.input.InputReservaDTO;
 import classroom.scheduler.dto.ReservaDTO;
 import classroom.scheduler.service.ReservaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("reservas")
@@ -24,8 +24,8 @@ public class ReservaController {
     ReservaService service;
 
     @GetMapping
-    public ResponseEntity<Page<ReservaDTO>> exibirReservas(@PageableDefault(size = 5) Pageable pageable) {
-        Page<ReservaDTO> pages = service.buscarTodasReservas(pageable);
+    public ResponseEntity<Page<ResumeReservaDTO>> exibirReservas(@PageableDefault(size = 5, sort = "statusReserva") Pageable pageable) {
+        Page<ResumeReservaDTO> pages = service.buscarTodasReservas(pageable);
         return ResponseEntity.ok(pages);
     }
     @GetMapping("/{id}")

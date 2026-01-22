@@ -1,4 +1,4 @@
-package classroom.scheduler.dto;
+package classroom.scheduler.dto.input;
 
 import classroom.scheduler.models.Sala;
 import classroom.scheduler.validacoes.Validacao;

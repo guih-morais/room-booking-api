@@ -1,20 +1,16 @@
 package classroom.scheduler.service;
 
-import classroom.scheduler.dto.AtualizaSalaDTO;
-import classroom.scheduler.dto.InputSalaDTO;
+import classroom.scheduler.dto.updates.AtualizaSalaDTO;
+import classroom.scheduler.dto.input.InputSalaDTO;
 import classroom.scheduler.dto.SalaDTO;
 import classroom.scheduler.exceptions.SalaNaoLocalizadaException;
-import classroom.scheduler.exceptions.UsuarioNaoLocalizadoException;
 import classroom.scheduler.models.Sala;
 import classroom.scheduler.repository.SalaRepository;
 import classroom.scheduler.validacoes.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class SalaService {
@@ -44,7 +40,7 @@ public class SalaService {
     }
 
     @Transactional
-    public void deletarSalaNumero(Long id) {
+    public void deletarSala(Long id) {
         Sala sala = repositorio.findById(id)
                 .orElseThrow(SalaNaoLocalizadaException::new);
         ValidacoesSala.validaSalaAtiva(id, repositorio);

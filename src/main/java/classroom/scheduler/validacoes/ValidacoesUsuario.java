@@ -1,6 +1,9 @@
 package classroom.scheduler.validacoes;
 
+import classroom.scheduler.exceptions.UsuarioNaoLocalizadoException;
 import classroom.scheduler.exceptions.ValidacaoException;
+import classroom.scheduler.models.Sala;
+import classroom.scheduler.models.Usuario;
 import classroom.scheduler.repository.SalaRepository;
 import classroom.scheduler.repository.UsuarioRepository;
 import io.micrometer.common.util.StringUtils;
@@ -19,5 +22,14 @@ public class ValidacoesUsuario {
             throw new ValidacaoException("Email já cadastrado no banco de dados.");
         }
     }
+
+    public static void validaUsuarioAtivo(Long id, UsuarioRepository usuarioRepository) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(UsuarioNaoLocalizadoException::new);
+        if(!usuario.isUsuarioAtivo()) {
+            throw new ValidacaoException("Usuário está desativado no banco de dados.");
+        }
+    }
+
 
 }
