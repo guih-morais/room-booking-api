@@ -15,27 +15,31 @@ import java.util.List;
 @Service
 public class SalaService {
 
+    private final SalaRepository repositorio;
+    private final ValidacoesSala validacoesSala;
 
-    @Autowired
-    SalaRepository repositorio;
+    public SalaService(SalaRepository repositorio, ValidacoesSala validacoesSala) {
+        this.repositorio = repositorio;
+        this.validacoesSala = validacoesSala;
+    }
 
     @Transactional
-    public SalaDTO criarSala(InputSalaDTO dto) {
-        ValidacoesSala.validaNumeroSalaJaExiste(dto.numeroSala(), repositorio);
+    public Sala criarSala(InputSalaDTO dto) {
+
+        validacoesSala.validaCriacaoSala(dto);
+
         Sala sala = new Sala(dto);
         repositorio.save(sala);
-        return new SalaDTO(sala);
+        return sala;
     }
 
-    public SalaDTO buscarSala(Long id) {
-        Sala sala = repositorio.findById(id)
+    public Sala buscarSala(Long id) {
+        return repositorio.findById(id)
                 .orElseThrow(SalaNaoLocalizadaException::new);
-        return new SalaDTO(sala);
     }
 
-    public List<SalaDTO> buscarTodasSalas() {
-        List<Sala> salas = repositorio.findBySalaAtivaIsTrue();
-        return salas.stream().map(SalaDTO::new).toList();
+    public List<Sala> buscarTodasSalas() {
+        return repositorio.findBySalaAtivaIsTrue();
 
     }
 
@@ -43,25 +47,25 @@ public class SalaService {
     public void deletarSala(Long id) {
         Sala sala = repositorio.findById(id)
                 .orElseThrow(SalaNaoLocalizadaException::new);
-        ValidacoesSala.validaSalaAtiva(id, repositorio);
+        validacoesSala.validaSalaAtiva(id);
         sala.setSalaAtiva(false);
     }
 
     @Transactional
-    public SalaDTO editarSala(AtualizaSalaDTO dto) {
+    public Sala editarSala(AtualizaSalaDTO dto) {
 
         Sala sala = repositorio.findById(dto.id())
                 .orElseThrow(SalaNaoLocalizadaException::new);
-        ValidacoesSala.validaSalaAtiva(dto.id(), repositorio);
+
+        validacoesSala.validaEdicaoSala(dto);
 
         if (dto.numeroSala() != null) {
-            ValidacoesSala.validaNumeroSalaJaExiste(dto.numeroSala(), repositorio);
             sala.setNumeroSala(dto.numeroSala());
         }
         if (dto.capacidade() != null) {
             sala.setCapacidade(dto.capacidade());
         }
 
-        return new SalaDTO(sala);
+        return sala;
     }
 }

@@ -8,7 +8,6 @@ import classroom.scheduler.validacoes.*;
 import classroom.scheduler.models.Usuario;
 import classroom.scheduler.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,46 +15,47 @@ import java.util.List;
 @Service
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository repositorio;
+    private final UsuarioRepository repositorio;
+    private final ValidacoesUsuario validacoesUsuario;
+
+    public UsuarioService(UsuarioRepository repositorio, ValidacoesUsuario validacoesUsuario) {
+        this.repositorio = repositorio;
+        this.validacoesUsuario = validacoesUsuario;
+    }
 
     @Transactional
-    public UsuarioDTO criarUsuario(InputUsuarioDTO dto) {
-        ValidacoesUsuario.validaNomeUsuarioJaExistente(dto.nome(), repositorio);
-        ValidacoesUsuario.validaEmailJaExistente(dto.email(), repositorio);
+    public Usuario criarUsuario(InputUsuarioDTO dto) {
+        validacoesUsuario.validaCriacaoUsuario(dto);
         Usuario usuario = new Usuario(dto);
         repositorio.save(usuario);
-        return new UsuarioDTO(usuario);
+        return usuario;
     }
 
 
-    public UsuarioDTO buscarUsuario(Long id) {
-        Usuario usuario = repositorio.findById(id)
+    public Usuario buscarUsuarioPorId(Long id) {
+        return repositorio.findById(id)
                 .orElseThrow(UsuarioNaoLocalizadoException::new);
-        return new UsuarioDTO(usuario);
     }
 
-    public List<UsuarioDTO> buscarTodosUsuarios() {
-        List<Usuario> usuarios = repositorio.findAll();
-        return usuarios.stream().map(UsuarioDTO::new).toList();
+    public List<Usuario> buscarTodosUsuarios() {
+        return repositorio.findAll();
     }
+
     @Transactional
     public void deletarUsuario(Long id) {
         Usuario usuario = repositorio.findById(id)
                 .orElseThrow(UsuarioNaoLocalizadoException::new);
-        ValidacoesUsuario.validaUsuarioAtivo(id, repositorio);
+        validacoesUsuario.validaUsuarioAtivo(id);
         usuario.setUsuarioAtivo(false);
     }
 
     @Transactional
-    public UsuarioDTO editarUsuario(AtualizaUsuarioDTO dto) {
+    public Usuario editarUsuario(AtualizaUsuarioDTO dto) {
         Usuario usuario = repositorio.findById(dto.id())
                 .orElseThrow(UsuarioNaoLocalizadoException::new);
-
-        ValidacoesUsuario.validaNomeUsuarioJaExistente(dto.nome(), repositorio);
-
+        validacoesUsuario.validaEdicaoUsuario(dto);
         usuario.setNome(dto.nome());
-        return new UsuarioDTO(usuario);
+        return usuario;
 
     }
 

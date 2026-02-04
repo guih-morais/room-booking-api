@@ -22,8 +22,6 @@ public record InputReservaDTO(
         Validacao.validaCampoNulo(fimReserva, "fim reserva");
         Validacao.validaCampoNulo(sala_id, "sala id");
         Validacao.validaCampoNulo(usuario_id, "usuário id");
-        ValidacoesReserva.validaInicioReservaAntesDeFimReserva(inicioReserva, fimReserva);
-        ValidacoesReserva.validaInicioReservaAntesHoraAtual(inicioReserva);
     }
 
     public InputReservaDTO(Reserva reserva) {

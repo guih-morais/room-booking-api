@@ -18,8 +18,6 @@ public record AtualizaReservaDTO(
         Validacao.validaCampoNulo(id, "id");
         Validacao.validaCampoNulo(inicioReserva, "início reserva");
         Validacao.validaCampoNulo(fimReserva, "fim reserva");
-        ValidacoesReserva.validaInicioReservaAntesDeFimReserva(inicioReserva, fimReserva);
-        ValidacoesReserva.validaInicioReservaAntesHoraAtual(inicioReserva);
     }
     public AtualizaReservaDTO(Reserva reserva) {
         this(   reserva.getId(),

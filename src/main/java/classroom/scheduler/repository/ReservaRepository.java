@@ -1,13 +1,14 @@
 package classroom.scheduler.repository;
 
 import classroom.scheduler.models.Reserva;
-import classroom.scheduler.models.Usuario;
+import classroom.scheduler.models.StatusReserva;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface ReservaRepository extends JpaRepository<Reserva, Long> {
@@ -22,4 +23,10 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     Boolean intervaloJaReservado(@Param("salaId") Long salaId,
                                  @Param("inicio") LocalDateTime inicioReserva,
                                  @Param("fim") LocalDateTime fimReserva);
+
+    @Query("""
+            SELECT r
+            FROM Reserva r
+            WHERE r.statusReserva = :status""")
+    List<Reserva> buscaReservasPorStatus(@Param("status") StatusReserva status);
 }

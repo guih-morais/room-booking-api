@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "usuarios")
-public class Usuario implements Validavel{
+public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

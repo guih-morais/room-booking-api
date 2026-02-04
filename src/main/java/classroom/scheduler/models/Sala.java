@@ -7,11 +7,13 @@ import java.util.List;
 
 @Entity
 @Table(name = "salas")
-public class Sala implements Validavel {
+public class Sala {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer capacidade;
+    private Integer numeroSala;
+    private boolean salaAtiva;
 
     public void setCapacidade(Integer capacidade) {
         this.capacidade = capacidade;
@@ -20,9 +22,6 @@ public class Sala implements Validavel {
     public void setNumeroSala(Integer numeroSala) {
         this.numeroSala = numeroSala;
     }
-
-    private Integer numeroSala;
-    private boolean salaAtiva;
 
     @OneToMany(mappedBy = "sala")
     private List<Reserva> reservas;

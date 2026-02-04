@@ -1,9 +1,7 @@
 package classroom.scheduler.service;
 
-import classroom.scheduler.dto.resume.ResumeReservaDTO;
 import classroom.scheduler.dto.updates.AtualizaReservaDTO;
 import classroom.scheduler.dto.input.InputReservaDTO;
-import classroom.scheduler.dto.ReservaDTO;
 import classroom.scheduler.exceptions.ReservaNaoLocalizadaException;
 import classroom.scheduler.exceptions.SalaNaoLocalizadaException;
 import classroom.scheduler.exceptions.UsuarioNaoLocalizadoException;
@@ -16,74 +14,92 @@ import classroom.scheduler.repository.SalaRepository;
 import classroom.scheduler.repository.UsuarioRepository;
 import classroom.scheduler.validacoes.ValidacoesReserva;
 import classroom.scheduler.validacoes.ValidacoesSala;
+import classroom.scheduler.validacoes.ValidacoesUsuario;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ReservaService {
 
-    @Autowired
-    ReservaRepository repositorio;
+    private final ReservaRepository reservaRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final SalaRepository salaRepository;
+    private final ValidacoesReserva validacoesReserva;
 
-    @Autowired
-    UsuarioRepository usuarioRepository;
+    public ReservaService(ReservaRepository reservaRepository,
+                          UsuarioRepository usuarioRepository,
+                          SalaRepository salaRepository,
+                          ValidacoesReserva validacoesReserva) {
 
-    @Autowired
-    SalaRepository salaRepository;
+        this.reservaRepository = reservaRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.salaRepository = salaRepository;
+        this.validacoesReserva = validacoesReserva;
+    }
 
     @Transactional
-    public ReservaDTO criarReserva(InputReservaDTO dto) {
+    public Reserva criarReserva(InputReservaDTO dto) {
 
         //Tenta buscar Usuário no banco de dados
         Usuario usuario = usuarioRepository.findById(dto.usuario_id())
                 .orElseThrow(UsuarioNaoLocalizadoException::new);
+
         //Tenta buscar Sala no banco de dados
         Sala sala = salaRepository.findById(dto.sala_id())
                 .orElseThrow(SalaNaoLocalizadaException::new);
 
         //Validações para criar a Reserva
-        ValidacoesSala.validaSalaAtiva(dto.sala_id(), salaRepository);
-        ValidacoesReserva.validaPeriodoEntreReservas(dto, repositorio);
+        validacoesReserva.validaCriacaoReserva(dto);
 
         Reserva reserva = new Reserva(dto, usuario, sala);
-        repositorio.save(reserva);
-        return new ReservaDTO(reserva);
+        reservaRepository.save(reserva);
+        return reserva;
     }
 
     @Transactional
     public void cancelarReserva(Long id) {
-        Reserva reserva = repositorio.findById(id)
+        Reserva reserva = reservaRepository.findById(id)
                 .orElseThrow(ReservaNaoLocalizadaException::new);
-        ValidacoesReserva.validaReservaAtiva(id, repositorio);
+        validacoesReserva.validaReservaAtiva(id);
         reserva.setStatusReserva(StatusReserva.CANCELADA);
     }
 
-    public Page<ResumeReservaDTO> buscarTodasReservas(Pageable pageable) {
-        Page<Reserva> reservas = repositorio.findAll(pageable);
-        return reservas.map(ResumeReservaDTO::new);
+    public Page<Reserva> buscarTodasReservas(Pageable pageable) {
+        return reservaRepository.findAll(pageable);
     }
 
     @Transactional
-    public ReservaDTO editarReserva(AtualizaReservaDTO dto) {
-        Reserva reserva = repositorio.findById(dto.id())
+    public Reserva editarReserva(AtualizaReservaDTO dto) {
+
+        Reserva reserva = reservaRepository.findById(dto.id())
                 .orElseThrow(ReservaNaoLocalizadaException::new);
-        ValidacoesReserva.validaReservaAtiva(dto.id(), repositorio);
-        ValidacoesReserva.validaPeriodoEntreReservas(
-                reserva.getInicioReserva(),
-                reserva.getFimReserva(),
-                reserva.getSala().getId(),
-                repositorio);
+
+        validacoesReserva.validaEdicaoReserva(dto);
         reserva.setInicioReserva(dto.inicioReserva());
         reserva.setFimReserva(dto.fimReserva());
-        return new ReservaDTO(reserva);
+        return reserva;
     }
 
-    public ReservaDTO buscarReservaId(Long id) {
-        Reserva reserva = repositorio.findById(id)
+    @Scheduled(fixedRate = 60000)
+    @Transactional
+    public void atualizarReserva() {
+        LocalDateTime agora = LocalDateTime.now();
+        List<Reserva> reservas = reservaRepository.buscaReservasPorStatus(StatusReserva.ATIVA);
+        reservas.forEach(r -> {
+            if(agora.isAfter(r.getFimReserva())) {
+                r.setStatusReserva(StatusReserva.FINALIZADA);
+            } else if(agora.isAfter(r.getInicioReserva())) {
+                r.setStatusReserva(StatusReserva.EM_ANDAMENTO);
+            }});
+    }
+    public Reserva buscarReservaId(Long id) {
+        return reservaRepository.findById(id)
                 .orElseThrow(ReservaNaoLocalizadaException::new);
-        return new ReservaDTO(reserva);
     }
 }

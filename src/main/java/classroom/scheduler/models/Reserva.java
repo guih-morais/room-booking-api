@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Table(name = "reservas")
 @Entity
-public class Reserva implements Validavel {
+public class Reserva {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,7 +19,8 @@ public class Reserva implements Validavel {
     @ManyToOne(optional = false)
     @JoinColumn(name = "salas_id")
     private Sala sala;
-
+    private LocalDateTime inicioReserva;
+    private LocalDateTime fimReserva;
     @Enumerated(EnumType.STRING)
     private StatusReserva statusReserva;
 
@@ -49,9 +50,6 @@ public class Reserva implements Validavel {
     public LocalDateTime getFimReserva() {
         return fimReserva;
     }
-
-    private LocalDateTime inicioReserva;
-    private LocalDateTime fimReserva;
 
     public Reserva(InputReservaDTO dto, Usuario usuario, Sala sala) {
         this.usuario = usuario;

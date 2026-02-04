@@ -4,6 +4,7 @@ import classroom.scheduler.dto.resume.ResumeReservaDTO;
 import classroom.scheduler.dto.updates.AtualizaReservaDTO;
 import classroom.scheduler.dto.input.InputReservaDTO;
 import classroom.scheduler.dto.ReservaDTO;
+import classroom.scheduler.models.Reserva;
 import classroom.scheduler.service.ReservaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,25 +21,29 @@ import java.net.URI;
 @RequestMapping("reservas")
 public class ReservaController {
 
-    @Autowired
-    ReservaService service;
+    private final ReservaService service;
+
+    public ReservaController(ReservaService service) {
+        this.service = service;
+    }
 
     @GetMapping
     public ResponseEntity<Page<ResumeReservaDTO>> exibirReservas(@PageableDefault(size = 5, sort = "statusReserva") Pageable pageable) {
-        Page<ResumeReservaDTO> pages = service.buscarTodasReservas(pageable);
-        return ResponseEntity.ok(pages);
+        Page<Reserva> pages = service.buscarTodasReservas(pageable);
+        Page<ResumeReservaDTO> pagesDTO = pages.map(ResumeReservaDTO::new);
+        return ResponseEntity.ok(pagesDTO);
     }
     @GetMapping("/{id}")
     public ResponseEntity<ReservaDTO> exibirReservaId(@PathVariable Long id) {
-        ReservaDTO reserva = service.buscarReservaId(id);
-        return ResponseEntity.ok(reserva);
+        ReservaDTO reservaDTO = new ReservaDTO(service.buscarReservaId(id));
+        return ResponseEntity.ok(reservaDTO);
     }
 
     @PostMapping
     public ResponseEntity<ReservaDTO> criarReserva(@RequestBody InputReservaDTO dto, UriComponentsBuilder uriBuilder) {
-        ReservaDTO reservaDTO = service.criarReserva(dto);
-        URI uri = uriBuilder.path("reservas/{id}").buildAndExpand(reservaDTO.id()).toUri();
-        return ResponseEntity.created(uri).body(reservaDTO);
+        Reserva reserva = service.criarReserva(dto);
+        URI uri = uriBuilder.path("reservas/{id}").buildAndExpand(reserva.getId()).toUri();
+        return ResponseEntity.created(uri).body(new ReservaDTO(reserva));
     }
 
     @DeleteMapping("cancelar/{id}")
@@ -49,7 +54,7 @@ public class ReservaController {
 
     @PutMapping
     public ResponseEntity<ReservaDTO> editarReserva(@RequestBody AtualizaReservaDTO dto) {
-        ReservaDTO reserva = service.editarReserva(dto);
-        return ResponseEntity.ok(reserva);
+        Reserva reserva = service.editarReserva(dto);
+        return ResponseEntity.ok(new ReservaDTO(reserva));
     }
 }
