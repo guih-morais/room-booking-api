@@ -7,6 +7,7 @@ import classroom.scheduler.dto.input.InputUsuarioDTO;
 import classroom.scheduler.dto.UsuarioDTO;
 import classroom.scheduler.models.Usuario;
 import classroom.scheduler.service.UsuarioService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioDTO> criarUsuario(@RequestBody InputUsuarioDTO inputDTO, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<UsuarioDTO> criarUsuario(@Valid @RequestBody InputUsuarioDTO inputDTO, UriComponentsBuilder uriBuilder) {
         Usuario usuario = service.criarUsuario(inputDTO);
         URI uri = uriBuilder.path("/usuarios/{id}").buildAndExpand(usuario.getId()).toUri();
         return ResponseEntity.created(uri).body(new UsuarioDTO(usuario));

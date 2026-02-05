@@ -91,6 +91,7 @@ public class ReservaService {
     public void atualizarReserva() {
         LocalDateTime agora = LocalDateTime.now();
         List<Reserva> reservas = reservaRepository.buscaReservasPorStatus(StatusReserva.ATIVA);
+        reservas.addAll(reservaRepository.buscaReservasPorStatus(StatusReserva.EM_ANDAMENTO));
         reservas.forEach(r -> {
             if(agora.isAfter(r.getFimReserva())) {
                 r.setStatusReserva(StatusReserva.FINALIZADA);

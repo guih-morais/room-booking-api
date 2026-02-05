@@ -2,6 +2,7 @@ package classroom.scheduler.models;
 
 import classroom.scheduler.dto.input.InputReservaDTO;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -14,13 +15,18 @@ public class Reserva {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "usuarios_id")
+    @NotNull
     private Usuario usuario;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "salas_id")
+    @NotNull
     private Sala sala;
+    @NotNull
     private LocalDateTime inicioReserva;
+    @NotNull
     private LocalDateTime fimReserva;
+    @NotNull
     @Enumerated(EnumType.STRING)
     private StatusReserva statusReserva;
 

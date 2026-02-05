@@ -30,6 +30,12 @@ public class ValidacoesSala {
         if(dto.numeroSala() != null) {
             validaNumeroSalaJaExiste(dto.numeroSala());
         }
+        validaUsuarioPossuiReservaAtivaOuEmAndamento(dto.id());
+    }
+
+    public void validaExclusaoSala(Long id) {
+        validaSalaAtiva(id);
+        validaUsuarioPossuiReservaAtivaOuEmAndamento(id);
     }
 
     public void validaSalaAtiva(Long id) {
@@ -50,6 +56,12 @@ public class ValidacoesSala {
     private void validaNumeroSalaJaExiste(Integer numeroSala) {
         if (salaRepository.findByNumeroSala(numeroSala).isPresent()) {
             throw new ValidacaoException("Já existe outra sala no banco de dados com este número de sala");
+        }
+    }
+
+    private void validaUsuarioPossuiReservaAtivaOuEmAndamento(Long id) {
+        if (salaRepository.salaPossuiReservaAtivaOuEmAndamento(id)) {
+            throw new ValidacaoException("Não é possível desativar ou editar uma sala que possui uma Reserva Ativa ou Em Andamento");
         }
     }
 

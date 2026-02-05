@@ -18,6 +18,10 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario")
     private List<Reserva> reservas;
 
+    public List<Reserva> getReservas() {
+        return reservas;
+    }
+
     public Usuario() {
     }
 

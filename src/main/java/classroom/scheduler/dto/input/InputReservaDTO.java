@@ -1,28 +1,25 @@
 package classroom.scheduler.dto.input;
 
 import classroom.scheduler.models.Reserva;
-import classroom.scheduler.models.StatusReserva;
-import classroom.scheduler.validacoes.Validacao;
-import classroom.scheduler.validacoes.ValidacoesReserva;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
 public record InputReservaDTO(
+        @NotNull
+        @Future
         @JsonFormat(pattern = "dd/MM/yy - HH:mm")
         LocalDateTime inicioReserva,
+        @NotNull
+        @Future
         @JsonFormat(pattern = "dd/MM/yy - HH:mm")
         LocalDateTime fimReserva,
+        @NotNull
         Long sala_id,
+        @NotNull
         Long usuario_id) {
-
-    public InputReservaDTO {
-        Validacao.validaCampoNulo(inicioReserva, "início reserva");
-        Validacao.validaCampoNulo(fimReserva, "fim reserva");
-        Validacao.validaCampoNulo(sala_id, "sala id");
-        Validacao.validaCampoNulo(usuario_id, "usuário id");
-    }
 
     public InputReservaDTO(Reserva reserva) {
         this(reserva.getInicioReserva(),

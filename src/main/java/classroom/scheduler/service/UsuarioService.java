@@ -45,7 +45,7 @@ public class UsuarioService {
     public void deletarUsuario(Long id) {
         Usuario usuario = repositorio.findById(id)
                 .orElseThrow(UsuarioNaoLocalizadoException::new);
-        validacoesUsuario.validaUsuarioAtivo(id);
+        validacoesUsuario.validaExclusaoUsuario(id);
         usuario.setUsuarioAtivo(false);
     }
 

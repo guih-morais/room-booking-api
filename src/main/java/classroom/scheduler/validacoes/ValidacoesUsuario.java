@@ -16,6 +16,7 @@ public class ValidacoesUsuario {
 
     private final UsuarioRepository usuarioRepository;
 
+
     public ValidacoesUsuario(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
@@ -28,6 +29,12 @@ public class ValidacoesUsuario {
     public void validaEdicaoUsuario(AtualizaUsuarioDTO dto) {
         validaUsuarioAtivo(dto.id());
         validaNomeUsuarioJaExistente(dto.nome());
+        validaUsuarioPossuiReservaAtivaOuEmAndamento(dto.id());
+    }
+
+    public void validaExclusaoUsuario(Long id) {
+        validaUsuarioAtivo(id);
+        validaUsuarioPossuiReservaAtivaOuEmAndamento(id);
     }
 
 
@@ -47,6 +54,12 @@ public class ValidacoesUsuario {
                 .orElseThrow(UsuarioNaoLocalizadoException::new);
         if(!usuario.isUsuarioAtivo()) {
             throw new ValidacaoException("Usuário está desativado no banco de dados.");
+        }
+    }
+
+    private void validaUsuarioPossuiReservaAtivaOuEmAndamento(Long id) {
+        if (usuarioRepository.usuarioPossuiReservaAtivaOuEmAndamento(id)) {
+            throw new ValidacaoException("Não é possível desativar ou editar um usuário que possui uma Reserva Ativa ou Em Andamento");
         }
     }
 

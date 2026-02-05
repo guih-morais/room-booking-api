@@ -1,17 +1,12 @@
 package classroom.scheduler.dto.updates;
 
-import classroom.scheduler.validacoes.Validacao;
-import classroom.scheduler.validacoes.ValidacoesSala;
-import classroom.scheduler.validacoes.ValidacoesUsuario;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record AtualizaUsuarioDTO(
+        @NotNull
         Long id,
+        @NotBlank
         String nome
 ) {
-    public AtualizaUsuarioDTO {
-        Validacao.validaCampoNulo(id, "id");
-        if(nome != null) {
-            Validacao.validaCampoNulo(nome, "nome");
-        }
-    }
 }

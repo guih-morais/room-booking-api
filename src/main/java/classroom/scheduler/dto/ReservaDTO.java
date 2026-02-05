@@ -1,5 +1,7 @@
 package classroom.scheduler.dto;
 
+import classroom.scheduler.dto.resume.ResumeSalaDTO;
+import classroom.scheduler.dto.resume.ResumeUsuarioDTO;
 import classroom.scheduler.models.Reserva;
 import classroom.scheduler.models.Sala;
 import classroom.scheduler.models.StatusReserva;
@@ -14,16 +16,16 @@ public record ReservaDTO(
         LocalDateTime inicioReserva,
         @JsonFormat(pattern = "dd/MM/yy - HH:mm")
         LocalDateTime fimReserva,
-        SalaDTO sala,
-        UsuarioDTO usuario,
+        ResumeSalaDTO sala,
+        ResumeUsuarioDTO usuario,
         StatusReserva statusReserva) {
 
     public ReservaDTO(Reserva reserva) {
         this(reserva.getId(),
                 reserva.getInicioReserva(),
                 reserva.getFimReserva(),
-                new SalaDTO(reserva.getSala()),
-                new UsuarioDTO(reserva.getUsuario()),
+                new ResumeSalaDTO(reserva.getSala()),
+                new ResumeUsuarioDTO(reserva.getUsuario()),
                 reserva.getStatusReserva());
     }
 }

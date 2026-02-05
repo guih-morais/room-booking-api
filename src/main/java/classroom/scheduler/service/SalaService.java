@@ -47,7 +47,7 @@ public class SalaService {
     public void deletarSala(Long id) {
         Sala sala = repositorio.findById(id)
                 .orElseThrow(SalaNaoLocalizadaException::new);
-        validacoesSala.validaSalaAtiva(id);
+        validacoesSala.validaExclusaoSala(id);
         sala.setSalaAtiva(false);
     }
 

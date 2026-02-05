@@ -6,6 +6,7 @@ import classroom.scheduler.dto.input.InputReservaDTO;
 import classroom.scheduler.dto.ReservaDTO;
 import classroom.scheduler.models.Reserva;
 import classroom.scheduler.service.ReservaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +41,7 @@ public class ReservaController {
     }
 
     @PostMapping
-    public ResponseEntity<ReservaDTO> criarReserva(@RequestBody InputReservaDTO dto, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<ReservaDTO> criarReserva(@Valid @RequestBody InputReservaDTO dto, UriComponentsBuilder uriBuilder) {
         Reserva reserva = service.criarReserva(dto);
         URI uri = uriBuilder.path("reservas/{id}").buildAndExpand(reserva.getId()).toUri();
         return ResponseEntity.created(uri).body(new ReservaDTO(reserva));

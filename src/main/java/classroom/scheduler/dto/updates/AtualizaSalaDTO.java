@@ -1,17 +1,14 @@
 package classroom.scheduler.dto.updates;
 
-import classroom.scheduler.validacoes.Validacao;
-import classroom.scheduler.validacoes.ValidacoesSala;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public record AtualizaSalaDTO(
+        @NotNull
         Long id,
+        @Positive
         Integer capacidade,
+        @Positive
         Integer numeroSala
 ) {
-
-    public AtualizaSalaDTO {
-        Validacao.validaCampoNulo(id, "id");
-    }
-
-
 }

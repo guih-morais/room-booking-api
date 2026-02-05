@@ -2,6 +2,8 @@ package classroom.scheduler.models;
 
 import classroom.scheduler.dto.input.InputSalaDTO;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.util.List;
 
@@ -11,8 +13,11 @@ public class Sala {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
     private Integer capacidade;
+    @NotNull
     private Integer numeroSala;
+    @NotNull
     private boolean salaAtiva;
 
     public void setCapacidade(Integer capacidade) {

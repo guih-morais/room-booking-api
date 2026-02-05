@@ -7,6 +7,7 @@ import classroom.scheduler.dto.input.InputSalaDTO;
 import classroom.scheduler.dto.SalaDTO;
 import classroom.scheduler.models.Sala;
 import classroom.scheduler.service.SalaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class SalaController {
     }
 
     @PostMapping
-    public ResponseEntity<SalaDTO> criarSala(@RequestBody InputSalaDTO dto, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<SalaDTO> criarSala(@Valid @RequestBody InputSalaDTO dto, UriComponentsBuilder uriBuilder) {
         Sala sala = service.criarSala(dto);
         URI uri = uriBuilder.path("/salas/{id}").buildAndExpand(sala.getId()).toUri();
         return ResponseEntity.created(uri).body(new SalaDTO(sala));
