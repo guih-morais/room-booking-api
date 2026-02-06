@@ -8,11 +8,10 @@
 		<version>4.0.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>classroom.scheduler</groupId>
+	<groupId>com.guih.morais</groupId>
 	<artifactId>demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ClassroomScheduler</name>
-	<description>Exercicio Pratico Reserva de Horarios</description>
+	<name>Room Booking API</name>
 	<url/>
 	<licenses>
 		<license/>
