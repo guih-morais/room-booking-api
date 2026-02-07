@@ -24,8 +24,8 @@ public class ValidacoesUsuario {
     }
 
     public void validaEdicaoUsuario(AtualizaUsuarioDTO dto) {
-        validaUsuarioAtivo(dto.id());
         validaNomeUsuarioJaExistente(dto.nome());
+        validaUsuarioAtivo(dto.id());
         validaUsuarioPossuiReservaAtivaOuEmAndamento(dto.id());
     }
 

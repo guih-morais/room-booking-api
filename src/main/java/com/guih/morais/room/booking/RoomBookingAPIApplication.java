@@ -12,7 +12,6 @@ import static org.springframework.data.web.config.EnableSpringDataWebSupport.Pag
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
 public class RoomBookingAPIApplication {
 	public static void main(String[] args) {
-		SpringApplication application = new SpringApplication(RoomBookingAPIApplication.class);
-		application.run(args);
+		SpringApplication.run(RoomBookingAPIApplication.class, args);
 	}
 }

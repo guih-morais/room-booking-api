@@ -1,11 +1,10 @@
-package classroom.scheduler;
+package com.guih.morais.room.booking;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ClassroomSchedulerApplicationTests {
-
+class RoomBookingAPIApplicationTests {
 	@Test
 	void contextLoads() {
 	}
