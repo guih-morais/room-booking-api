@@ -1,7 +1,15 @@
 package com.guih.morais.room.booking.exceptions;
 
 public class ValidacaoException extends RuntimeException {
-    public ValidacaoException(String mensagem) {
-        super(mensagem);
+
+    private final MensagemErro erro;
+
+    public ValidacaoException(MensagemErro erro) {
+        super(erro.toString());
+        this.erro = erro;
+    }
+
+    public MensagemErro getErro() {
+        return erro;
     }
 }

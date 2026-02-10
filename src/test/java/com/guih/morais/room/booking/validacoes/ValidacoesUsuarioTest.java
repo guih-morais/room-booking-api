@@ -88,6 +88,7 @@ class ValidacoesUsuarioTest {
 
         Assertions.assertThrows(ValidacaoException.class,
                 () -> validacoesUsuario.validaEdicaoUsuario(atualizaDTO));
+
     }
     }
 

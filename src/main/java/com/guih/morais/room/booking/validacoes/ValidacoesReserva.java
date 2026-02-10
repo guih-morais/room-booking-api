@@ -2,6 +2,7 @@ package com.guih.morais.room.booking.validacoes;
 
 import com.guih.morais.room.booking.dto.input.InputReservaDTO;
 import com.guih.morais.room.booking.dto.updates.AtualizaReservaDTO;
+import com.guih.morais.room.booking.exceptions.MensagemErro;
 import com.guih.morais.room.booking.exceptions.ReservaNaoLocalizadaException;
 import com.guih.morais.room.booking.exceptions.ValidacaoException;
 import com.guih.morais.room.booking.models.Reserva;
@@ -45,8 +46,8 @@ public class ValidacoesReserva {
         validaInicioReservaAntesDeFimReserva(dto.inicioReserva(), dto.fimReserva());
         validaInicioReservaAntesHoraAtual(dto.inicioReserva());
         validaReservaAtiva(dto.id());
-
         validaPeriodoEntreReservas(reserva.getId(), dto.inicioReserva(), dto.fimReserva(), reserva.getSala().getId());
+
         regraNegocioAntecedencia(dto.inicioReserva());
         regraNegocioHorarios30Minutos(dto.inicioReserva(), dto.fimReserva());
     }
@@ -59,7 +60,7 @@ public class ValidacoesReserva {
         Reserva reserva = reservaRepository.findById(id)
                 .orElseThrow(ReservaNaoLocalizadaException::new);
         if (reserva.getStatusReserva() != StatusReserva.ATIVA) {
-            throw new ValidacaoException("Esta reserva não está ativa, portanto não é possível editá-la ou cancelá-la.");
+            throw new ValidacaoException(MensagemErro.RESERVA_INATIVA);
         }
     }
 
@@ -73,36 +74,33 @@ public class ValidacoesReserva {
 
     private void validaInicioReservaAntesDeFimReserva(LocalDateTime inicioReserva, LocalDateTime fimReserva) {
         if (inicioReserva.isAfter(fimReserva)) {
-            throw new ValidacaoException("O início da reserva não pode ser depois do fim da reserva!");
+            throw new ValidacaoException(MensagemErro.RESERVA_INICIO_RESERVA_DEPOIS_QUE_FIM_RESERVA);
         }
     }
 
     private void validaPeriodoEntreReservas(Long id, LocalDateTime inicioReserva, LocalDateTime fimReserva, Long salaId) {
         Optional<Reserva> reservaOptional = reservaRepository.buscaPorIntervaloJaReservado(salaId, inicioReserva, fimReserva);
         if (reservaOptional.isPresent() && !reservaOptional.get().getId().equals(id)) {
-            throw new ValidacaoException("Esta sala já foi reservada nesse período de data e horário.");
+            throw new ValidacaoException(MensagemErro.RESERVA_HORARIO_JA_FOI_RESERVADO);
         }
     }
 
 
     private void validaInicioReservaAntesHoraAtual(LocalDateTime inicioReserva) {
         if (inicioReserva.isBefore(LocalDateTime.now())) {
-            throw new ValidacaoException("Selecione uma data e horários futuros");
+            throw new ValidacaoException(MensagemErro.RESERVA_INICIO_RESERVA_ANTES_QUE_HORA_ATUAL);
         }
     }
 
     private void regraNegocioAntecedencia(LocalDateTime inicioReserva) {
         if (LocalDateTime.now().plusHours(3L).minusMinutes(1).isAfter(inicioReserva)) {
-            throw new ValidacaoException("Você deve criar uma reserva com no mínimo 3 horas de antecedência");
+            throw new ValidacaoException(MensagemErro.RESERVA_NAO_RESPEITA_ANTECEDENCIA_MINIMA);
         }
     }
 
     private void regraNegocioHorarios30Minutos(LocalDateTime inicioReserva, LocalDateTime fimReserva) {
-        if(!(inicioReserva.getMinute()%30 == 0)) {
-            throw new ValidacaoException("As reservas só podem ser realizadas em horários onde a minutagem é 00 ou 30");
-        }
-        if(!(fimReserva.getMinute()%30 == 0)) {
-            throw new ValidacaoException("As reservas só podem ser realizadas em horários onde a minutagem é 00 ou 30");
+        if(!(inicioReserva.getMinute()%30 == 0) || !(fimReserva.getMinute()%30 == 0)) {
+            throw new ValidacaoException(MensagemErro.RESERVA_COM_HORARIO_FORA_DO_PADRAO);
         }
     }
 

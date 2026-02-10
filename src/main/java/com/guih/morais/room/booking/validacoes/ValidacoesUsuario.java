@@ -2,6 +2,7 @@ package com.guih.morais.room.booking.validacoes;
 
 import com.guih.morais.room.booking.dto.input.InputUsuarioDTO;
 import com.guih.morais.room.booking.dto.updates.AtualizaUsuarioDTO;
+import com.guih.morais.room.booking.exceptions.MensagemErro;
 import com.guih.morais.room.booking.exceptions.UsuarioNaoLocalizadoException;
 import com.guih.morais.room.booking.exceptions.ValidacaoException;
 import com.guih.morais.room.booking.models.Usuario;
@@ -37,12 +38,12 @@ public class ValidacoesUsuario {
 
     private void validaNomeUsuarioJaExistente(String nome) {
         if (usuarioRepository.findByNome(nome).isPresent()) {
-            throw new ValidacaoException("Nome de usuário já cadastrado no banco de dados.");
+            throw new ValidacaoException(MensagemErro.USUARIO_NOME_USUARIO_JA_CADASTRADO);
         }
     }
     private void validaEmailJaExistente(String email) {
         if (usuarioRepository.findByEmail(email).isPresent()) {
-            throw new ValidacaoException("Email já cadastrado no banco de dados.");
+            throw new ValidacaoException(MensagemErro.USUARIO_EMAIL_JA_CADASTRADO);
         }
     }
 
@@ -50,13 +51,13 @@ public class ValidacoesUsuario {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(UsuarioNaoLocalizadoException::new);
         if(!usuario.isUsuarioAtivo()) {
-            throw new ValidacaoException("Usuário está desativado no banco de dados.");
+            throw new ValidacaoException(MensagemErro.USUARIO_INATIVO);
         }
     }
 
     private void validaUsuarioPossuiReservaAtivaOuEmAndamento(Long id) {
         if (usuarioRepository.usuarioPossuiReservaAtivaOuEmAndamento(id)) {
-            throw new ValidacaoException("Não é possível desativar ou editar um usuário que possui uma Reserva Ativa ou Em Andamento");
+            throw new ValidacaoException(MensagemErro.USUARIO_ESTA_EM_UMA_RESERVA_ATIVA_OU_EM_ANDAMENTO);
         }
     }
 
